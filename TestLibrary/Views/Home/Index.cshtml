@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BookDetails>
+@{
+    ViewData["Title"] = "Home Page";
+    var pageVal = Context?.Request?.RouteValues["page"]?.ToString();
+    var page = string.IsNullOrEmpty(pageVal) ? 1 : int.Parse(pageVal);
+    var pages = int.Parse(ViewData["Pages"].ToString());
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome To Library</h1>
+</div>
+<div class="row col-lg-8 offset-2">
+    <div class="alert alert-secondary">
+        <a class="btn btn-primary float-end" asp-action="Search" asp-controller="Home">Advanced search</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8 offset-2">
+        <div class="bg-light">
+            <div class="row fw-bold">
+                <div class="col"><a class="text-black text-decoration-none" asp-action="Index" asp-route-page="@(page)" asp-route-order="ISBN">ISBN</a></div>
+                <div class="col"><a class="text-black text-decoration-none" asp-action="Index" asp-route-page="@(page)" asp-route-order="Title">Title</a></div>
+                <div class="col"><a class="text-black text-decoration-none" asp-action="Index" asp-route-page="@(page)" asp-route-order="Author">Author</a></div>
+                <div class="col"><a class="text-black text-decoration-none" asp-action="Index" asp-route-page="@(page)" asp-route-order="Description">Description</a></div>
+                <div class="col text-black text-decoration-none">Available</div>
+                <div class="col"><a class="text-black text-decoration-none" asp-action="Index" asp-route-page="@(page)" asp-route-order="Count">Count</a></div>
+            </div>
+            <br />
+            @foreach (var book in Model)
+            {
+                <div class="row border-bottom my-2">
+                    <div class="col">
+                        <a class="text-decoration-none text-black" asp-action="Details" asp-route-id="@book.Id">
+                            <div class="row border-bottom table-hover">
+                                <div class="col">@book.ISBN</div>
+                                <div class="col">@book.Title</div>
+                                <div class="col">@book.Author</div>
+                                <div class="col">@book.Description</div>
+                                <div class="col">@book.Available</div>
+                                <div class="col">@book.Count</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="float-end">
+        @if (pages > 0)
+        {
+            @if (page < pages)
+            {
+                <a class="btn btn-sm" asp-action="Index" asp-controller="Home" asp-route-page="@(page+1)" asp-route-order="Id">Next</a>
+            }
+            if (page > 1)
+            {
+                <a class="btn btn-sm" asp-action="Index" asp-controller="Home" asp-route-page="@(page-1)" asp-route-order="Id">Previous</a>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Book>
+@{
+    ViewData["Title"] = "Search Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Search over library</h1>
+</div>
+
+<div class="row col-lg-8 offset-2">
+    <div class="alert alert-secondary">
+        <form asp-action="Search" asp-controller="Home" class="form" asp-antiforgery="true">
+            <div class="row">
+                <div class="col"><input type="text" placeholder="Title" class="form-control" id="Title" name="Title" /></div>
+                <div class="col"><input type="text" placeholder="Author" class="form-control" id="Author" name="Author" /></div>
+                <div class="col"><input type="text" placeholder="ISBN" class="form-control" id="ISBN" name="ISBN" /></div>
+                <div class="col"><input type="text" placeholder="Description" class="form-control" id="Description" name="Description" /></div>
+                <div class="col"><button type="submit" class="btn btn-outline-info">Search</button></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 offset-2">
+        <div class="list-group list-group-flush border-bottom scrollarea">
+            @if (Model != null)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ISBN</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Description</th>
+                                <th>Count</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var book in Model)
+                            {
+                                <tr>
+                                    <th>@book.ISBN</th>
+                                    <th>@book.Title</th>
+                                    <th>@book.Author</th>
+                                    <th>@book.Description</th>
+                                    <th>@book.Count</th>
+                                    <th><a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Home" asp-route-id="@book.Id">Details</a></th>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "My Account";
+}
+
+<div class="text-center">
+    <h1 class="display-4">My Account</h1>
+</div>
+<div class="row col-lg-8 offset-2">
+    <div class="alert alert-secondary">
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8 offset-2">
+        @if (Model != null)
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model as IEnumerable<BorrowDetails>)
+                {
+                    <li class="list-group-item">
+                        <div class="row @(item.IsReturned?"bg-info":"")">
+                            <div class="col fw-bold">@item.Book</div>
+                            <div class="col fw-bold">@item.BorrowDate</div>
+                            @if (item.IsReturned)
+                            {
+                                <div class="col fw-bold">Returned back</div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <form asp-action="Return" asp-controller="Account" asp-antiforgery="true">
+                                        <input type="hidden" name="borrowId" id="borrowId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-warning">Return to library</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+
+        }
+    </div>
+</div>
