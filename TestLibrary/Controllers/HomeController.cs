@@ -27,7 +27,7 @@ namespace TestLibrary.Controllers
             try
             {
                 var books = await _bookManager.ListBooksDetails(page ?? 1, _appSettings.PageSize, order ?? "Id");
-                var pages = (int)Math.Ceiling(await _bookManager.GetBookCount() / (double)_appSettings.PageSize);
+                var pages = (int)Math.Ceiling(await _bookManager.GetBooksCount() / (double)_appSettings.PageSize);
                 ViewData["Pages"] = pages;
                 return View(books);
             }

@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "My Account";
+    var days = Convert.ToInt32(ViewData["AlertAfter"]);
 }
 
 <div class="text-center">
@@ -17,12 +18,12 @@
                 @foreach (var item in Model as IEnumerable<BorrowDetails>)
                 {
                     <li class="list-group-item">
-                        <div class="row @(item.IsReturned?"bg-info":"")">
+                        <div class="row">
                             <div class="col fw-bold">@item.Book</div>
                             <div class="col fw-bold">@item.BorrowDate</div>
                             @if (item.IsReturned)
                             {
-                                <div class="col fw-bold">Returned back</div>
+                                <div class="col fw-bold text-success">Returned back</div>
                             }
                             else
                             {
@@ -32,6 +33,10 @@
                                         <button type="submit" class="btn btn-sm btn-warning">Return to library</button>
                                     </form>
                                 </div>
+                                if (item.BorrowDate.AddDays(days) > DateTime.Now)
+                                {
+                                    <div class="col text-danger">Period expired</div>
+                                }
                             }
                         </div>
                     </li>

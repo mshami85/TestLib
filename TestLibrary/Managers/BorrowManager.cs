@@ -17,7 +17,7 @@ namespace TestLibrary.Managers
         {
             return await _context.Borrows.GetAsync(id);
         }
-        
+
         public async Task<bool> Borrow(int user_id, int book_id)
         {
             var book = await _context.Books.GetAsync(book_id);
@@ -71,10 +71,6 @@ namespace TestLibrary.Managers
 
         public async Task<IEnumerable<BorrowDetails>> GetUserBorrows(int user_id)
         {
-            if (user_id <= 0)
-            {
-                throw new NullReferenceException("User not found");
-            }
             var user = await _context.Users.GetAsync(user_id);
             if (user == null)
             {
@@ -85,6 +81,24 @@ namespace TestLibrary.Managers
                     $"INNER JOIN Users ON Users.Id=UserId WHERE UserId=@id";
             SqlParameter parameter = new("@id", user_id);
             return await _context.QueryAsync<BorrowDetails>(q, parameter);
+        }
+
+        public async Task<IEnumerable<BorrowDetails>> GetBorrows(bool? isReturned = null)
+        {
+            var q = $"SELECT Borrows.*,Books.Title AS Book,Users.FullName AS \"User\" FROM Borrows " +
+                    $"INNER JOIN Books ON Books.Id=BookId " +
+                    $"INNER JOIN Users ON Users.Id=UserId ";
+            if (isReturned.HasValue)
+            {
+                q += "WHERE IsReturned=" + (isReturned.Value ? "1" : "0");
+            }
+            return await _context.QueryAsync<BorrowDetails>(q);
+        }
+
+        public async Task<BorrowStatistics?> GetStatistics()
+        {
+            var q = "SELECT COUNT(*) AS Total,(SELECT COUNT(*) FROM Borrows WHERE IsReturned=1) AS Returned FROM Borrows";
+            return await _context.QuerySingleAsync<BorrowStatistics>(q);
         }
     }
 }

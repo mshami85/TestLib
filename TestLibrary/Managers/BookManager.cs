@@ -13,7 +13,7 @@ namespace TestLibrary.Managers
             _context = context;
         }
 
-        public async Task<int> GetBookCount()
+        public async Task<int> GetBooksCount()
         {
             var q = "SELECT COUNT(*) FROM Books";
             return (int)await _context.QueryScalarAsync(q);
@@ -104,6 +104,30 @@ namespace TestLibrary.Managers
             }
             var sqlParams = parameters.Select(p => new SqlParameter(p.Key, p.Value)).ToArray();
             return await _context.QueryAsync<Book>(q, sqlParams);
+        }
+
+        internal async Task<bool> CreateBook(string? iSBN, string title, string? author, string? description, int count)
+        {
+            if (string.IsNullOrEmpty(title) || count <= 0)
+            {
+                throw new ArgumentNullException("Arguments nulls");
+            }
+            var q = "SELECT COUNT(*) FROM Books WHERE Title LIKE @title";
+            var p1 = new SqlParameter("@title", title);
+            var exists = _context.QueryScalarAsync(q, p1);
+            if (exists != null && Convert.ToInt32(exists) > 0)
+            {
+                throw new Exception("Book already exists");
+            }
+            var book = new Book
+            {
+                Author = author,
+                Count = count,
+                Description = description,
+                ISBN = iSBN,
+                Title = title
+            };
+            return await _context.Books.InsertAsync(book);
         }
     }
 }

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<BorrowDetails>
+@{
+    ViewData["Title"] = "Administrator Management page";
+    var days = Convert.ToInt32(ViewData["AlertAfter"]);
+    var booksCount = Convert.ToInt32(ViewData["BooksStatistics"]);
+    var borrowsStat = ViewData["BorrowsStatistics"] as BorrowStatistics;
+}
+
+<div class="text-center">
+    <h1 class="display-4">My Account</h1>
+</div>
+<div class="row col-lg-8 offset-2">
+    <div class="alert alert-secondary">
+        <a class="btn btn-primary" asp-action="CreateBook">Add new book</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 offset-2">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>User</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model as IEnumerable<BorrowDetails>)
+                {
+                    var expire = item.BorrowDate.AddDays(days) > DateTime.Now;
+                    <tr>
+                        <td>@item.Book</td>
+                        <td>@item.User</td>
+                        <td>@item.BorrowDate</td>
+                        <td class="@(expire?"text-danger":"")">@(item.IsReturned ? "Returned" : "NOT YET") @(expire ? "Time expired" : "")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-3" style="border-radius: 20px;">
+            <div class="card-body shadow" style="border-radius: 20px;">
+                <div class="row">
+                    <div class="col-lg-8 fw-bold fs-3">Total Books In Library</div>
+                    <div class="col fs-1">@booksCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-5" style="border-radius: 20px;">
+            <div class="card-body shadow" style="border-radius: 20px;">
+                <div class="row">
+                    <div class="col text-center fw-bold fs-3">Borrows</div>
+                    <hr />
+                </div>
+                <div class="row text-center text-black-50 fw-bolder">
+                    <div class="col">Total</div>
+                    <div class="col">Returned</div>
+                    <div class="col">Not returned</div>
+                </div>
+                <div class="row text-center text-black-50 fw-bolder">
+                    <div class="col">@borrowsStat.Total</div>
+                    <div class="col">@borrowsStat.Returned</div>
+                    <div class="col">@(borrowsStat.Total - borrowsStat.Returned)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

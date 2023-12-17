@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using TestLibrary.Data;
 using TestLibrary.Helpers;
 using TestLibrary.Managers;
+using TestLibrary.Models;
 using TestLibrary.ViewModels;
 
 namespace TestLibrary.Controllers
@@ -15,9 +17,11 @@ namespace TestLibrary.Controllers
         UserManager _userManager;
         BorrowManager _borrowManager;
         ILogger<AccountController> _logger;
-        public AccountController(ILogger<AccountController> logger, LibDBContext context)
+        AppSettings _appSettings;
+        public AccountController(ILogger<AccountController> logger, IOptionsSnapshot<AppSettings> options, LibDBContext context)
         {
             _logger = logger;
+            _appSettings = options.Value;
             _userManager = new UserManager(context, User);
             _borrowManager = new BorrowManager(context);
         }
@@ -25,7 +29,12 @@ namespace TestLibrary.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (User.GetRole() == UserRole.ADMIN)
+            {
+                return RedirectToAction("Index", "Admin");
+            }
             var borrows = await _borrowManager.GetUserBorrows(User.GetId());
+            ViewData["AlertAfter"] = _appSettings.AlertAfter;
             return View(borrows);
         }
 
@@ -84,6 +93,10 @@ namespace TestLibrary.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
                 _logger.LogInformation("User {UserName} logged in at {Time}.", login.UserName, DateTime.Now);
 
+                if(userPrincipal.GetRole()== UserRole.ADMIN)
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
                 if (string.IsNullOrEmpty(ReturnUrl))
                 {
                     ReturnUrl = "/";
