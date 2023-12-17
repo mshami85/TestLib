@@ -32,7 +32,12 @@ namespace TestLibrary.Data
         {
             _options = options.Value;
             _connection = new SqlConnection(_options.ConnectionStrings.DefaultConnection);
-            _connection.OpenAsync().Wait();
+            OpenConnection();
+        }
+
+        private async void OpenConnection()
+        {
+            await _connection.OpenAsync();
         }
 
         #region Dispose
