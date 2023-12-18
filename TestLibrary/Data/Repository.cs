@@ -18,13 +18,13 @@ namespace TestLibrary.Data
         public int Id { get; set; }
     }
 
-    public class GenericRepository<T> : IRepository<T> where T : Entity, new()
+    public class Repository<T> : IRepository<T> where T : Entity, new()
     {
         protected string _tableName;
         protected AppSettings _appSettings;
         protected SqlConnection _con;
 
-        public GenericRepository(AppSettings options, SqlConnection con)
+        public Repository(AppSettings options, SqlConnection con)
         {
             _tableName = typeof(T).Name + "s";
             _con = con;

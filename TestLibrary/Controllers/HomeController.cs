@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TestLibrary.Data;
 using TestLibrary.Helpers;
@@ -58,7 +57,7 @@ namespace TestLibrary.Controllers
             catch (Exception ex)
             {
                 ViewData["Error"] = ex.Message;
-                return View(Enumerable.Empty<BookDetails>());
+                return View(Enumerable.Empty<Book>());
             }
         }
 
@@ -69,8 +68,16 @@ namespace TestLibrary.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var book = await _bookManager.GetBookDetails(id.Value);
-            return View(book);
+            try
+            {
+                var book = await _bookManager.GetBookDetails(id.Value);
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = ex.Message;
+                return View();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

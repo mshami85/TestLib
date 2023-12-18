@@ -8,6 +8,7 @@
 </div>
 <div class="row col-lg-8 offset-2">
     <div class="alert alert-secondary">
+        My Books
     </div>
 </div>
 <div class="row">
@@ -33,7 +34,7 @@
                                         <button type="submit" class="btn btn-sm btn-warning">Return to library</button>
                                     </form>
                                 </div>
-                                if (item.BorrowDate.AddDays(days) > DateTime.Now)
+                                if (item.BorrowDate.AddDays(days) < DateTime.Now)
                                 {
                                     <div class="col text-danger">Period expired</div>
                                 }

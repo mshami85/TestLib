@@ -16,9 +16,9 @@ namespace TestLibrary.Data
 
     public class LibDBContext : IDisposable, IDbActions
     {
-        public IRepository<User> Users => _userRepository ??= new GenericRepository<User>(_options, _connection);
-        public IRepository<Book> Books => _bookRepository ??= new GenericRepository<Book>(_options, _connection);
-        public IRepository<Borrow> Borrows => _borrowRepository ??= new GenericRepository<Borrow>(_options, _connection);
+        public IRepository<User> Users => _userRepository ??= new Repository<User>(_options, _connection);
+        public IRepository<Book> Books => _bookRepository ??= new Repository<Book>(_options, _connection);
+        public IRepository<Borrow> Borrows => _borrowRepository ??= new Repository<Borrow>(_options, _connection);
 
         private readonly SqlConnection _connection;
         private readonly AppSettings _options;
@@ -35,9 +35,9 @@ namespace TestLibrary.Data
             OpenConnection();
         }
 
-        private async void OpenConnection()
+        private void OpenConnection()
         {
-            await _connection.OpenAsync();
+            _connection.OpenAsync().Wait();
         }
 
         #region Dispose

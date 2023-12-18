@@ -29,7 +29,7 @@
             <tbody>
                 @foreach (var item in Model as IEnumerable<BorrowDetails>)
                 {
-                    var expire = item.BorrowDate.AddDays(days) > DateTime.Now;
+                    var expire = item.BorrowDate.AddDays(days) < DateTime.Now;
                     <tr>
                         <td>@item.Book</td>
                         <td>@item.User</td>

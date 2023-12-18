@@ -33,6 +33,7 @@ namespace TestLibrary.Controllers
                 var borrowsStat = await _borrowManager.GetStatistics();
                 ViewData["BorrowsStatistics"] = borrowsStat;
                 ViewData["BooksStatistics"] = await _bookManager.GetBooksCount();
+                ViewData["AlertAfter"] = _appSettings.AlertAfter;
                 return View(borrows);
             }
             catch (Exception ex)
@@ -63,7 +64,8 @@ namespace TestLibrary.Controllers
             }
             catch (Exception ex)
             {
-                return View("_Error", new ErrorVM(ex));
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(book);
             }
         }
     }

@@ -106,19 +106,24 @@ namespace TestLibrary.Managers
             return await _context.QueryAsync<Book>(q, sqlParams);
         }
 
-        internal async Task<bool> CreateBook(string? iSBN, string title, string? author, string? description, int count)
+        internal async Task<bool> CreateBook(string iSBN, string title, string? author, string? description, int count)
         {
-            if (string.IsNullOrEmpty(title) || count <= 0)
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(iSBN) || count <= 0)
             {
-                throw new ArgumentNullException("Arguments nulls");
+                throw new ArgumentNullException("Required arguments are not provided");
             }
-            var q = "SELECT COUNT(*) FROM Books WHERE Title LIKE @title";
-            var p1 = new SqlParameter("@title", title);
-            var exists = _context.QueryScalarAsync(q, p1);
+
+            var q = "SELECT COUNT(*) FROM Books WHERE ISBN LIKE @isbn OR (Title LIKE @title AND Author LIKE @author)";
+            var p1 = new SqlParameter("@isbn", iSBN);
+            var p2 = new SqlParameter("@title", title);
+            object authValue = string.IsNullOrEmpty(author) ? DBNull.Value : author;
+            var p3 = new SqlParameter("@author", authValue);
+            var exists = await _context.QueryScalarAsync(q, p1, p2, p3);
             if (exists != null && Convert.ToInt32(exists) > 0)
             {
                 throw new Exception("Book already exists");
             }
+
             var book = new Book
             {
                 Author = author,

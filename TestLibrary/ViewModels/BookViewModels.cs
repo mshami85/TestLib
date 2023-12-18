@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using TestLibrary.Models;
 
 namespace TestLibrary.ViewModels
@@ -12,11 +11,11 @@ namespace TestLibrary.ViewModels
     public class BookCreateVM
     {
         [Display(Name = "Copy count")]
-        [Required(ErrorMessage ="{0} is required"),Range(1,100)]
+        [Required(ErrorMessage = "{0} is required"), Range(1, 100)]
         public int Count { get; set; } = 1;
 
-        [Display(Name ="Book title")]
-        [Required(ErrorMessage ="{0} is required")]
+        [Display(Name = "Book title")]
+        [Required(ErrorMessage = "{0} is required")]
         public string Title { get; set; }
 
         [Display(Name = "Book description")]
@@ -26,6 +25,7 @@ namespace TestLibrary.ViewModels
         public string? Author { get; set; }
 
         [Display(Name = "Book ISBN")]
-        public string? ISBN { get; set; }
+        [Required(ErrorMessage = "{0} is required")]
+        public string ISBN { get; set; }
     }
 }
